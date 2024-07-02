@@ -1,0 +1,2 @@
+# JULY_RPG_vue_practice
+練習用vue寫一個rpg遊戲網站
