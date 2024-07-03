@@ -5,9 +5,10 @@ const props=defineProps({
   popUpMsg:String,
   isError:Boolean,
   isChecking:Boolean,
+  isMessage:Boolean,
   autoHide:Number
 })
-const emit=defineEmits(["update:isChecking","update:isError","confirm","cancel"]);
+const emit=defineEmits(["update:isMessage","update:isError","confirm","cancel"]);
 
 /**
  * 彈出視窗自動消失
@@ -19,29 +20,42 @@ watch(()=>props.isError,(newVal)=>{
     },props.autoHide);
   }
 });
+watch(()=>props.isMessage,(newVal)=>{
+  if(newVal&&props.autoHide>0){
+    setTimeout(()=>{
+      emit("update:isMessage",false);
+    },props.autoHide);
+  }
+});
 function confirmAction(){
-  props.isChecking=false;
   emit("confirm");
 }
 function cancelAction(){
-  props.isChecking=false;
   emit("cancel");
 }
 </script>
 
 <template>
-  <!--      錯誤視窗-->
-  <transition name="fade">
-    <div v-if="isError" class="error-popup">
-      <p>{{popUpMsg}}</p>
-    </div>
-  </transition>
-  <!--      確認視窗-->
-  <div v-if="isChecking" class="new-user-popup">
-    <p>{{popUpMsg}}</p>
-    <div class="button-container">
-      <button @click="confirmAction" class="submit-button">確定</button>
-      <button @click="cancelAction" class="submit-button">取消</button>
+  <div class="layer-5 popup">
+    <!--  警告視窗-->
+    <transition name="fade">
+      <div v-if="isError" class="error-popup">
+        <div v-html="popUpMsg"></div>
+      </div>
+    </transition>
+    <!--  訊息視窗-->
+    <transition name="fade">
+      <div v-if="isMessage" class="message-popup">
+        <div v-html="popUpMsg"></div>
+      </div>
+    </transition>
+    <!--      確認視窗-->
+    <div v-if="isChecking" class="check-popup">
+      <div v-html="popUpMsg"></div>
+      <div class="button-container">
+        <button @click="confirmAction" class="submit-button">確定</button>
+        <button @click="cancelAction" class="submit-button">取消</button>
+      </div>
     </div>
   </div>
 </template>
@@ -58,7 +72,7 @@ function cancelAction(){
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
-.new-user-popup {
+.check-popup {
   position: fixed;
   bottom: 50%;
   left: 50%;
@@ -69,21 +83,17 @@ function cancelAction(){
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
-.submit-button {
-  padding: 10px;
-  border: none;
+.message-popup{
+  position: fixed;
+  bottom: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  background-color: #1c7966;
+  color: white;
   border-radius: 5px;
-  background-color: #00b894;
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  box-shadow: 0 2px 10px rgba(129, 211, 181, 0.2);
 }
-
-.submit-button:hover {
-  background-color: #009874;
-}
-
-
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.5s;
@@ -97,5 +107,9 @@ function cancelAction(){
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
+}
+
+.popup {
+  position: fixed;
 }
 </style>
