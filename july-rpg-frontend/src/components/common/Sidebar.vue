@@ -27,7 +27,6 @@ function logout(){
 }
 //控制選項點擊
 function handleOptionClick(option:Option){
-  logout();
   const modalComponent=modalMap.get(option);
   if(modalComponent){
     openModal(modalComponent);
