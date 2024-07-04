@@ -1,5 +1,5 @@
-<script setup>
-import {defineProps,defineEmits,watch} from "vue";
+<script setup lang="ts">
+import {watch} from "vue";
 
 const props=defineProps({
   popUpMsg:String,
@@ -14,14 +14,14 @@ const emit=defineEmits(["update:isMessage","update:isError","confirm","cancel"])
  * 彈出視窗自動消失
  */
 watch(()=>props.isError,(newVal)=>{
-  if(newVal&&props.autoHide>0){
+  if(newVal && props.autoHide && props.autoHide>0){
     setTimeout(()=>{
       emit("update:isError",false);
     },props.autoHide);
   }
 });
 watch(()=>props.isMessage,(newVal)=>{
-  if(newVal&&props.autoHide>0){
+  if(newVal && props.autoHide && props.autoHide>0){
     setTimeout(()=>{
       emit("update:isMessage",false);
     },props.autoHide);

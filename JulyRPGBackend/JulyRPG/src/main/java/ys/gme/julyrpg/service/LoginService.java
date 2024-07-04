@@ -5,6 +5,7 @@ import ys.gme.julyrpg.dao.UserDao;
 import ys.gme.julyrpg.entity.collection.User;
 import ys.gme.julyrpg.entity.dto.LoginDto;
 import ys.gme.julyrpg.entity.dto.ResultDto;
+import ys.gme.julyrpg.util.Constant;
 import ys.gme.julyrpg.util.Enums;
 
 /**
@@ -21,10 +22,19 @@ public class LoginService {
 
     /**
      * 寫入帳號資料
-     * @param user 帳號容器
+     * @param createRequest 帳號容器
      */
-    public void addUser(User user){
-        userDao.save(user);
+    public ResultDto createUser(LoginDto createRequest){
+        User user=new User();
+        user.setUsername(createRequest.getUsername());
+        user.setPassword(createRequest.getPassword());
+        try {
+            userDao.save(user);
+        }catch (Exception e){
+            Constant.DebugLog("創建使用者失敗",e.getMessage());
+            return new ResultDto(Enums.ApiResult.fail.getMessage(), false);
+        }
+        return new ResultDto(Enums.ApiResult.success.getMessage(), true);
     }
 
     /**
@@ -35,11 +45,11 @@ public class LoginService {
     public ResultDto login(LoginDto loginRequest) {
         User userData=userDao.findByUsername(loginRequest.getUsername());
         if(userData==null){
-            return new ResultDto(Enums.ApiResult.user_not_exist.getMessage(), false,true);
+            return new ResultDto(Enums.ApiResult.user_not_exist.getMessage(), false);
         }
         if(!userData.getPassword().equals(loginRequest.getPassword())){
-            return new ResultDto(Enums.ApiResult.password_wrong.getMessage(), false,false);
+            return new ResultDto(Enums.ApiResult.password_wrong.getMessage(), false);
         }
-        return new ResultDto(Enums.ApiResult.success.getMessage(), true,false);
+        return new ResultDto(Enums.ApiResult.success.getMessage(), true);
     }
 }

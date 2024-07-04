@@ -1,6 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import {ref} from "vue";
 import Popup from "@/components/common/Popup.vue";
+import {apiRequest,ApiResponse,ApiResult,ApiMethod,ApiUrl} from "@/components/api.ts";
+import {changePage,Pages} from "@/components/router.ts";
+
+
 const username=ref('');
 const password=ref('');
 
@@ -9,6 +13,7 @@ const isChecking=ref(false);
 const isMessage=ref(false);
 const popupMsg=ref('');
 
+
 /**
  * 創建新帳戶
  */
@@ -16,30 +21,25 @@ async function createUser(){
   //關閉確認視窗
   isChecking.value=false;
   try {
-    const response=await fetch(`${import.meta.env.VITE_API_URL}/createUser`,{
-      method:"POST",
-      headers:{"Content-type":"application/json"},
-      body:JSON.stringify({
-        username:username.value,
-        password:password.value
-      })
+    const data=await apiRequest<ApiResponse>({
+      url:ApiUrl.createUser,
+      method:ApiMethod.post,
+      data:{username:username.value,password:password.value}
     });
-    if(!response.ok){
-      errorPopup("失敗");
-      return;
-    }
-    const data=await response.json();
-    if(data.isCreateSucess){
-
+    if(data.isSuccess){
+      msgPopup("創建成功")
+      setTimeout(()=>{
+        changePage(Pages.game);
+      },1000);
     }else {
       errorPopup("創建失敗");
     }
-  }catch (e){
-    errorPopup(e);
+  }catch (e:any){
+    errorPopup(e.message);
   }
 }
 
-async function handleSubmit() {
+async function loginSubmit() {
   //帳號密碼輸入檢查
   if(!checkInput()){
     popupMsg.value="請輸入正確帳號密碼";
@@ -48,32 +48,24 @@ async function handleSubmit() {
   }
   //登入api
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
-      method:'POST',
-      headers:{'Content-type':'application/json'},
-      body:JSON.stringify({
-        username:username.value,
-        password:password.value
-      })
-    });
-    if(!response.ok){
-      errorPopup("失敗")
-      return;
-    }
-    const data=await response.json();
+    const data=await apiRequest<ApiResponse>({
+      url:ApiUrl.login,
+      method:ApiMethod.post,
+      data:{username:username.value,password:password.value}
+  });
     if(!data.isSuccess){
       //失敗後判斷是否為新使用者
-      if(data.isNewUser){
+      if(data.message===ApiResult.user_not_exist){
         popupMsg.value=`是否創建新帳號?<br>帳號: ${username.value} 密碼: ${password.value}`;
         isChecking.value=true;
       }else {
         errorPopup(data.message);
       }
     }else {
-      errorPopup("成功");
+      changePage(Pages.game);
     }
-  }catch (e){
-    errorPopup(e);
+  }catch (e:any){
+    errorPopup(e.message);
   }
 }
 
@@ -81,11 +73,11 @@ async function handleSubmit() {
  * 訊息彈出視窗
  * @param msg
  */
-function errorPopup(msg){
+function errorPopup(msg:string){
   popupMsg.value=msg;
   isError.value=true;
 }
-function msgPopup(msg){
+function msgPopup(msg:string){
   popupMsg.value=msg;
   isMessage.value=true;
 }
@@ -97,8 +89,6 @@ function msgPopup(msg){
 function checkInput(){
   return !(username.value.length<1 || password.value.length<1);
 }
-
-
 </script>
 
 <template>
@@ -108,13 +98,13 @@ function checkInput(){
     <div class="clouds layer-2"></div>
 <!--    登入視窗-->
     <div class="login-container layer-3">
-      <form class="login-form" @submit.prevent="handleSubmit">
+      <form class="login-form" @submit.prevent="loginSubmit">
         <input type="text" v-model="username" placeholder="帳號" class="input-box"/>
         <input type="password" v-model="password" placeholder="密碼" class="input-box"/>
         <button type="submit" class="submit-button">登入</button>
       </form>
     </div>
-    <!--    彈出視窗-->
+<!--    彈出視窗-->
     <Popup :pop-up-msg="popupMsg" :is-checking="isChecking" :is-error="isError" :auto-hide="1000"
            @confirm="createUser" @cancel="isChecking=false" @update:is-error="isError=$event"
            @update:is-message="isMessage=$event" :is-message="isMessage"/>

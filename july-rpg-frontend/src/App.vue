@@ -1,10 +1,9 @@
-<script setup>
-import Login from "@/components/login.vue";
+<script setup >
 </script>
 
 <template>
   <div id="app">
-    <Login/>
+    <router-view></router-view>
   </div>
 </template>
 

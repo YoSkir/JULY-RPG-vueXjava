@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.ToString;
+import ys.gme.julyrpg.util.Enums;
 
 /**
  * 後端回覆前端用傳遞容器
@@ -13,15 +14,12 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString(callSuper = true)
 public class ResultDto {
-    public ResultDto(String message,Boolean isSuccess,Boolean isNewUser){
+    public ResultDto(String message, Boolean isSuccess){
         this.isSuccess=isSuccess;
         this.message=message;
-        this.isNewUser =isNewUser;
     }
     @JsonProperty("isSuccess")
     private Boolean isSuccess;
     @JsonProperty("message")
     private String message;
-    @JsonProperty("isNewUser")
-    private Boolean isNewUser;
 }
