@@ -17,8 +17,10 @@ const router:Router=createRouter({
     routes,
 });
 export function changePage(pageUrl:Pages){
+    //讀取畫面
     router.push(Pages.loading)
         .then(()=>{
+            //1.5秒後跳轉
             setTimeout(()=>{
                 router.push(pageUrl).catch(err=>{throw err;});
             },1500);

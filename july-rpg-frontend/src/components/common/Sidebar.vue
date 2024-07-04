@@ -1,20 +1,47 @@
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import {changePage, Pages} from "@/components/router.ts";
+import Modal from "@/components/common/Modal.vue";
 
-const isOpen=ref(false);
-const options=ref(["選手清單"]);
-
+//欄位表
+enum Option{player_list="選手清單"}
+const modalMap=new Map<Option,string>([
+    [Option.player_list,"PlayerList"]
+]);
+//欄寬
 const SIDEBAR_WIDTH:number=window.innerWidth/5<250? 250:window.innerWidth/5;
 
+//控制側邊欄位開關
+const isOpen=ref(false);
+//側邊欄位選項arr
+const options=ref([Option.player_list]);
+//控制小視窗開關
+const isModalOpen=ref(false);
+//小視窗檔案名稱
+const modalType=ref<string|null>(null);
 
+
+//登出
 function logout(){
-  setTimeout(()=>{
-    changePage(Pages.login);
-  },1000);
+  changePage(Pages.login);
 }
-function handleOptionClick(option:string){
-
+//控制選項點擊
+function handleOptionClick(option:Option){
+  logout();
+  const modalComponent=modalMap.get(option);
+  if(modalComponent){
+    openModal(modalComponent);
+  }
+}
+//打開小視窗
+function openModal(type:string){
+  modalType.value=type;
+  isModalOpen.value=true;
+}
+//關閉小視窗
+function closeModal(){
+  isModalOpen.value=false;
+  modalType.value=null;
 }
 
 //以下為滑鼠偵測
@@ -55,6 +82,7 @@ onUnmounted(()=>{
       登出
     </div>
   </div>
+  <Modal :is-open="isModalOpen" :type="modalType" @close="closeModal"></Modal>
 </template>
 
 <style scoped>

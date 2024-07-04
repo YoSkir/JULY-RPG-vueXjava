@@ -5,7 +5,7 @@ import Sidebar from "@/components/common/Sidebar.vue";
 
 <template>
   <div>
-    <div>你好</div>
+    <div></div>
     <Sidebar/>
   </div>
 </template>

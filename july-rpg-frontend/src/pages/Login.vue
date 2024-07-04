@@ -63,10 +63,7 @@ async function loginSubmit() {
       }
       //登入成功
     }else {
-      msgPopup(data.message);
-      setTimeout(()=>{
-        changePage(Pages.game);
-      },500);
+      changePage(Pages.game);
     }
   }catch (e:any){
     errorPopup(e.message);
