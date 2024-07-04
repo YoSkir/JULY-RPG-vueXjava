@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import {ref, onMounted, onUnmounted, computed} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
+import {changePage, Pages} from "@/components/router.ts";
 
 const isOpen=ref(false);
 const options=ref(["選手清單"]);
 
 const SIDEBAR_WIDTH:number=window.innerWidth/5<250? 250:window.innerWidth/5;
-const sidebarStyle=computed(()=>({
-  '--sidebar-width':`${SIDEBAR_WIDTH}px`
-}));
 
 
 function logout(){
-
+  setTimeout(()=>{
+    changePage(Pages.login);
+  },1000);
 }
 function handleOptionClick(option:string){
 
