@@ -3,9 +3,11 @@
 </script>
 
 <template>
-  <div>sss</div>
+  <div class="test">sss</div>
 </template>
 
 <style scoped>
-
+.test {
+  width: 400px;
+}
 </style>

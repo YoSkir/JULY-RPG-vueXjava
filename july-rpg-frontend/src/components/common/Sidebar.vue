@@ -1,36 +1,34 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted, ref} from "vue";
-import {changePage, Pages} from "@/components/router.ts";
 import Modal from "@/components/common/Modal.vue";
+import {successLogout} from "@/pages/Login.vue";
+import {currentUsername, getChinese} from "@/components/constant.ts";
 
 //欄位表
-enum Option{player_list="選手清單"}
-const modalMap=new Map<Option,string>([
-    [Option.player_list,"PlayerList"]
-]);
+enum Option{PlayerList="PlayerList"}
 //欄寬
 const SIDEBAR_WIDTH:number=window.innerWidth/5<250? 250:window.innerWidth/5;
 
 //控制側邊欄位開關
 const isOpen=ref(false);
 //側邊欄位選項arr
-const options=ref([Option.player_list]);
+const options=ref(Option);
 //控制小視窗開關
 const isModalOpen=ref(false);
 //小視窗檔案名稱
 const modalType=ref<string|null>(null);
+//目前登入者資訊
+const username=ref(currentUsername);
+
 
 
 //登出
 function logout(){
-  changePage(Pages.login);
+  successLogout();
 }
 //控制選項點擊
 function handleOptionClick(option:Option){
-  const modalComponent=modalMap.get(option);
-  if(modalComponent){
-    openModal(modalComponent);
-  }
+  openModal(option);
 }
 //打開小視窗
 function openModal(type:string){
@@ -73,12 +71,15 @@ onUnmounted(()=>{
 <!--    選項-->
     <div class="options">
       <div class="option" v-for="option in options" :key="option" @click="handleOptionClick(option)">
-        {{option}}
+        {{getChinese(option)}}
       </div>
     </div>
 <!--    登出-->
-    <div class="logout" @click="logout">
-      登出
+    <div class="logout-container">
+      <div class="user-info" @click="openModal('UserInfo')">{{username}}</div>
+      <div class="logout" @click="logout">
+        登出
+      </div>
     </div>
   </div>
   <Modal :is-open="isModalOpen" :type="modalType" @close="closeModal"></Modal>
@@ -97,6 +98,8 @@ onUnmounted(()=>{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-top-right-radius: 20px; /* 设置右上角为圆角 */
+  border-bottom-right-radius: 20px; /* 设置右下角为圆角 */
 }
 
 .sidebar.open {
@@ -110,22 +113,80 @@ onUnmounted(()=>{
 .option {
   padding: 10px;
   cursor: pointer;
+  position: relative; /* 为了让子元素绝对定位 */
+  transition: all 0.3s; /* 过渡效果 */
+  border-top-right-radius: 20px; /* 设置右上角为圆角 */
+  border-bottom-right-radius: 20px; /* 设置右下角为圆角 */
+  text-align: center;
+}
+
+.option::before {
+  content: '';
+  position: absolute;
+  top: -1px; /* 浮出效果的外边距 */
+  bottom: -1px;
+  left: -50px;
+  right: -1px;
+  border: 2px solid transparent; /* 边框初始透明 */
+  border-top-right-radius: 20px; /* 设置右上角为圆角 */
+  border-bottom-right-radius: 20px; /* 设置右下角为圆角 */
+  transition: all 0.2s; /* 过渡效果 */
 }
 
 .option:hover {
   background-color: #336b46;
   color: white;
+  animation: slide-right 0.2s linear forwards;
+  z-index: 2;
+}
+.option:not(:hover){
+  animation: slide-back 0.1s linear forwards;
+}
+@keyframes slide-right {
+  0%{transform:translate(0,0);}
+  100%{transform:translate(20px,3px);}
+}
+@keyframes slide-back {
+  0%{transform:translate(20px,3px);}
+  100%{transform:translate(0,0);}
 }
 
+.option:hover::before {
+  border-color: #00b894; /* 设置边框颜色 */
+  z-index: -1;
+  background-color: #336b46;
+  transition: all 0.2s; /* 过渡效果 */
+}
+
+.logout-container{
+  padding: 10px;
+  background: #37423c;
+}
 .logout {
   padding: 10px;
   cursor: pointer;
   background-color: #444;
   text-align: center;
+  border-radius: 20px;
 }
 
 .logout:hover {
   background-color: #336b46;
   color: white;
+  transition: all 0.3s; /* 过渡效果 */
+}
+.user-info{
+  color: #15d559;
+  text-align: center;
+  padding: 5px;
+  margin-bottom: 5px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+.user-info:hover{
+  background-color: #f8efc1;
+  color: #46390f;
+  transition: all 0.3s; /* 过渡效果 */
+  border-radius: 20px;
 }
 </style>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import Popup from "@/components/common/Popup.vue";
-import {apiRequest,ApiResponse,ApiResult,ApiMethod,ApiUrl} from "@/components/api.ts";
-import {changePage,Pages} from "@/components/router.ts";
+import {ApiMethod, apiRequest, ApiResponse, ApiResult, ApiUrl} from "@/components/api.ts";
+import {changePage, Pages} from "@/components/router.ts";
+import {USER_KEY} from "@/components/constant.ts";
 
 
 const username=ref('');
@@ -12,6 +13,7 @@ const isError=ref(false);
 const isChecking=ref(false);
 const isMessage=ref(false);
 const popupMsg=ref('');
+
 
 
 /**
@@ -29,7 +31,7 @@ async function createUser(){
     if(data.isSuccess){
       msgPopup("創建成功")
       setTimeout(()=>{
-        changePage(Pages.game);
+        successLogin();
       },1000);
     }else {
       errorPopup("創建失敗");
@@ -63,11 +65,20 @@ async function loginSubmit() {
       }
       //登入成功
     }else {
-      changePage(Pages.game);
+      successLogin();
     }
   }catch (e:any){
     errorPopup(e.message);
   }
+}
+
+function successLogin(){
+  const currentUser={
+    currentUsername:username.value,
+    currentPassword:password.value
+  };
+  localStorage.setItem(USER_KEY,JSON.stringify(currentUser));
+  changePage(Pages.game);
 }
 
 /**
@@ -90,6 +101,16 @@ function msgPopup(msg:string){
 function checkInput(){
   return !(username.value.length<1 || password.value.length<1);
 }
+</script>
+<!--導出登出function-->
+<script lang="ts">
+  import {USER_KEY} from "@/components/constant.ts";
+  import {changePage, Pages} from "@/components/router.ts";
+
+  export function successLogout(){
+    localStorage.removeItem(USER_KEY);
+    changePage(Pages.login);
+  }
 </script>
 
 <template>
