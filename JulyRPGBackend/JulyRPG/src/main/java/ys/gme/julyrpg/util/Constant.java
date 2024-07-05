@@ -2,10 +2,13 @@ package ys.gme.julyrpg.util;
 
 import jakarta.annotation.PreDestroy;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -18,6 +21,18 @@ import java.util.concurrent.TimeUnit;
 public class Constant {
     @Getter
     private static final DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    private static final Random random=new Random();
+    /**
+     * 獲得隨機整數
+     * @param min 最低值
+     * @param max 最高值
+     * @return 隨機數
+     */
+    public static int getRandomInt(int min,int max){
+        return random.nextInt(min,max+1);
+    }
+
     //偵錯日誌皆使用異步處理
     private static final ExecutorService logExecutor= Executors.newSingleThreadExecutor();
     /**
