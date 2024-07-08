@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: JulyRPG
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/julyRPG
+app:
+  constant:
+    potentialWeight: 3

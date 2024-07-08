@@ -9,8 +9,7 @@ import ys.gme.julyrpg.entity.dto.LoginDto;
 import ys.gme.julyrpg.entity.dto.ResultDto;
 import ys.gme.julyrpg.service.LoginService;
 import ys.gme.julyrpg.util.Constant;
-import ys.gme.julyrpg.util.Enums;
-import ys.gme.julyrpg.util.NameGenerator;
+import ys.gme.julyrpg.util.game.NameGenerator;
 
 /**
  * @author yoskir
@@ -26,9 +25,6 @@ public class LoginController {
     NameGenerator nameGenerator;
     @PostMapping("/login")
     public ResponseEntity<ResultDto> login(@RequestBody LoginDto loginRequest){
-        for(int i=0;i<100;i++){
-            Constant.MoreRainBowPrint(nameGenerator.getRandomName());
-        }
         //回傳分別為 結果訊息 是否成功 是否為新的username
         return ResponseEntity.ok(loginService.login(loginRequest));
     }

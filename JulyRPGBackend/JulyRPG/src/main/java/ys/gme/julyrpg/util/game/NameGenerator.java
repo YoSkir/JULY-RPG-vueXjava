@@ -1,9 +1,13 @@
-package ys.gme.julyrpg.util;
+package ys.gme.julyrpg.util.game;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ys.gme.julyrpg.entity.name.NameEntity;
 import ys.gme.julyrpg.entity.name.Nation;
+import ys.gme.julyrpg.util.Constant;
+import ys.gme.julyrpg.util.DataManager;
+import ys.gme.julyrpg.util.Enums;
+import ys.gme.julyrpg.util.JsonMapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +25,7 @@ public class NameGenerator {
     private final Map<Enums.Nation,List<String>> firstNameMap=new HashMap<>();
     private final Map<Enums.Nation,List<String>> lastNameMap=new HashMap<>();
 
-    public NameGenerator(DataManager dataManager,JsonMapper jsonMapper){
+    public NameGenerator(DataManager dataManager, JsonMapper jsonMapper){
         String nameListJson= dataManager.readStringFromFile(Enums.DataFileTypeEnum.name);
         NameEntity nameList=jsonMapper.jsonToObject(nameListJson,NameEntity.class);
         setNameList(nameList);

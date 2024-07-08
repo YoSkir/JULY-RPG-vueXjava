@@ -9,7 +9,12 @@ export enum ApiResult{success="成功",fail="失敗",password_wrong="密碼錯�
 //定義api方法
 export enum ApiMethod{post="POST",get="GET"}
 //整理api路由
-export enum ApiUrl{login="/login",createUser="/createUser"}
+export enum ApiUrl{
+    //login
+    login="/login",createUser="/createUser",
+    //player
+    selectPlayerList="/selectPlayerList"
+}
 
 //回傳結果的容器
 export interface ApiResponse{

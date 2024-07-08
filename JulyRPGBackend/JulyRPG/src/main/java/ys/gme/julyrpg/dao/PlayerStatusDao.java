@@ -6,5 +6,5 @@ import ys.gme.julyrpg.entity.collection.player.PlayerStatus;
 /**
  * @author yoskir
  */
-public interface PlayerStatusDao extends MongoRepository<String, PlayerStatus> {
+public interface PlayerStatusDao extends MongoRepository<PlayerStatus,String> {
 }
