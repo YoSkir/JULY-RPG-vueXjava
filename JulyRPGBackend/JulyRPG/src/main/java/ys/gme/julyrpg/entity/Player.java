@@ -12,4 +12,5 @@ import ys.gme.julyrpg.entity.collection.player.PlayerStatus;
 public class Player {
     private PlayerInfo info;
     private PlayerStatus status;
+    private Integer id;
 }

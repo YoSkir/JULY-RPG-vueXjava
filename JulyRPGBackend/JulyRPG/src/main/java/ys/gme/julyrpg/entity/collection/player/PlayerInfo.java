@@ -3,6 +3,7 @@ package ys.gme.julyrpg.entity.collection.player;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import ys.gme.julyrpg.util.Enums;
@@ -16,6 +17,7 @@ import java.util.Map;
  */
 @Document(collection = "player_info")
 @Getter
+@ToString(callSuper = true)
 public class PlayerInfo {
     public PlayerInfo(String name, Enums.Nation nation){
         for(Enums.Status status:Enums.Status.values()){

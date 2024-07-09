@@ -5,7 +5,7 @@ import axios,{AxiosInstance,AxiosRequestConfig,AxiosResponse} from 'axios';
  */
 
 //定義回傳結果
-export enum ApiResult{success="成功",fail="失敗",password_wrong="密碼錯誤",user_not_exist="使用者不存在"}
+export enum ApiResult{success="success",fail="fail",password_wrong="password_wrong",user_not_exist="user_not_exist"}
 //定義api方法
 export enum ApiMethod{post="POST",get="GET"}
 //整理api路由
@@ -13,14 +13,9 @@ export enum ApiUrl{
     //login
     login="/login",createUser="/createUser",
     //player
-    selectPlayerList="/selectPlayerList"
+    selectPlayerList="/selectPlayerList", generatePlayer="/generatePlayer",levelUp="/levelUp"
 }
 
-//回傳結果的容器
-export interface ApiResponse{
-    isSuccess:boolean,
-    message:ApiResult
-}
 
 //定義通用API請求函數
 interface ApiRequestConfig extends AxiosRequestConfig{

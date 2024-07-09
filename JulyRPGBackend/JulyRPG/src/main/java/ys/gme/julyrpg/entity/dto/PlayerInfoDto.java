@@ -32,4 +32,6 @@ public class PlayerInfoDto {
     private Integer remainMp;
     @JsonProperty("status")
     private Map<Enums.Status,Integer> status;
+    @JsonProperty("potential")
+    private Map<Enums.Status,Integer> potential;
 }

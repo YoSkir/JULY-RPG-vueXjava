@@ -32,9 +32,9 @@ public class LoginService {
             userDao.save(user);
         }catch (Exception e){
             Constant.DebugLog("創建使用者失敗",e.getMessage());
-            return new ResultDto(Enums.ApiResult.fail.getValue(), false);
+            return new ResultDto(Enums.ApiResult.fail, false);
         }
-        return new ResultDto(Enums.ApiResult.success.getValue(), true);
+        return new ResultDto(Enums.ApiResult.success, true);
     }
 
     /**
@@ -45,11 +45,11 @@ public class LoginService {
     public ResultDto login(LoginDto loginRequest) {
         User userData=userDao.findByUsername(loginRequest.getUsername());
         if(userData==null){
-            return new ResultDto(Enums.ApiResult.user_not_exist.getValue(), false);
+            return new ResultDto(Enums.ApiResult.user_not_exist, false);
         }
         if(!userData.getPassword().equals(loginRequest.getPassword())){
-            return new ResultDto(Enums.ApiResult.password_wrong.getValue(), false);
+            return new ResultDto(Enums.ApiResult.password_wrong, false);
         }
-        return new ResultDto(Enums.ApiResult.success.getValue(), true);
+        return new ResultDto(Enums.ApiResult.success, true);
     }
 }

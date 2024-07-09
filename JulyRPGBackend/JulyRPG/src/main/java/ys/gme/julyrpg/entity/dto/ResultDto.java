@@ -14,12 +14,12 @@ import ys.gme.julyrpg.util.Enums;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString(callSuper = true)
 public class ResultDto {
-    public ResultDto(String message, Boolean isSuccess){
+    public ResultDto(Enums.ApiResult message, Boolean isSuccess){
         this.isSuccess=isSuccess;
         this.message=message;
     }
     @JsonProperty("isSuccess")
     private Boolean isSuccess;
     @JsonProperty("message")
-    private String message;
+    private Enums.ApiResult message;
 }

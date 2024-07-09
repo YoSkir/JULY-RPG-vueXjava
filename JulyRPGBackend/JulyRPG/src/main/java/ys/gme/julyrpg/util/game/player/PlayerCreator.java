@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ys.gme.julyrpg.entity.Player;
 import ys.gme.julyrpg.entity.collection.player.PlayerInfo;
 import ys.gme.julyrpg.entity.collection.player.PlayerStatus;
+import ys.gme.julyrpg.util.Constant;
 
 /**
  * 創建選手的類
@@ -35,6 +36,10 @@ public class PlayerCreator {
         PlayerStatus playerStatus=new PlayerStatus(playerInfo.getId());
         player.setStatus(playerStatus);
         playerCreator_status.initialStatue(player);
+
+        //設定id
+        player.setId(playerInfo.getId());
+
 
         //回傳選手容器
         return player;

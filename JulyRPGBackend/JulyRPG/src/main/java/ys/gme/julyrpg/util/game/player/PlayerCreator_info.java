@@ -7,6 +7,7 @@ import ys.gme.julyrpg.util.Enums;
 import ys.gme.julyrpg.util.game.NameGenerator;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 選手創造 負責資訊的類
@@ -16,6 +17,7 @@ import java.util.Map;
 public class PlayerCreator_info {
     private final NameGenerator nameGenerator;
 
+    private AtomicInteger id=new AtomicInteger(0);
     public PlayerCreator_info(NameGenerator nameGenerator){
         this.nameGenerator=nameGenerator;
     }
@@ -26,6 +28,7 @@ public class PlayerCreator_info {
         PlayerInfo playerInfo=new PlayerInfo(name,nation);
         //初始化隨機潛能
         setPotential(playerInfo);
+        playerInfo.setId(id.incrementAndGet());
         return playerInfo;
     }
 
@@ -47,7 +50,33 @@ public class PlayerCreator_info {
      * @return 潛能值
      */
     private Integer randomPotential(){
-        return Constant.getRandomInt(0,10);
+        //10 1%
+        //9 2%
+        //8 4%
+        //7 8%
+        //6 16%
+        //3~5 25%
+        //0~2 44%
+        int potentialLottery=Constant.getRandomInt(0,100);
+        if(potentialLottery==100){
+            return 10;
+        }
+        if(potentialLottery>97){
+            return 9;
+        }
+        if(potentialLottery>93){
+            return 8;
+        }
+        if(potentialLottery>85){
+            return 7;
+        }
+        if(potentialLottery>69){
+            return 6;
+        }
+        if(potentialLottery>44){
+            return Constant.getRandomInt(3,5);
+        }
+        return Constant.getRandomInt(0,2);
     }
 
     /**

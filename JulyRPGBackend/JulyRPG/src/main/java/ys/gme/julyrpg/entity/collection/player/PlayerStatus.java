@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import ys.gme.julyrpg.util.Enums;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,7 +28,7 @@ public class PlayerStatus {
 
     @Id
     private Integer id;
-    private Map<Enums.Status,Integer> status;
+    private Map<Enums.Status,Integer> status=new HashMap<>();
     private String nickName;
     private Integer level;
     private Integer exp;

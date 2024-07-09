@@ -11,7 +11,7 @@ const props=defineProps<{
 
 const emit=defineEmits(["close"]);
 
-const componentType=computed(()=>modalComponents[props.type]||null);
+const componentType=computed(()=>modalComponents[props.type]);
 
 function close(){
   emit("close");

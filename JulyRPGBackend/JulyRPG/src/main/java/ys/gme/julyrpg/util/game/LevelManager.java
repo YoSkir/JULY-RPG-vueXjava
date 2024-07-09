@@ -46,7 +46,7 @@ public class LevelManager {
      */
     private Integer getStatusUp(Integer potential) {
         //從50%+潛能*潛能權重的機率開始 每提升一次-10% 最低10%
-        Integer upRate=50+potential*potentialWeight;
+        Integer upRate=30+potential*potentialWeight;
         Integer statusUpped=0;
         while (upRate> Constant.getRandomInt(0,100)){
             statusUpped++;

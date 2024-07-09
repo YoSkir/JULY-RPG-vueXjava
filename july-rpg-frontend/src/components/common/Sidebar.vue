@@ -16,7 +16,7 @@ const options=ref(Option);
 //控制小視窗開關
 const isModalOpen=ref(false);
 //小視窗檔案名稱
-const modalType=ref<string|null>(null);
+const modalType=ref<string>("");
 //目前登入者資訊
 const username=ref(currentUsername);
 
@@ -38,7 +38,7 @@ function openModal(type:string){
 //關閉小視窗
 function closeModal(){
   isModalOpen.value=false;
-  modalType.value=null;
+  modalType.value="";
 }
 
 //以下為滑鼠偵測

@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import Popup from "@/components/common/Popup.vue";
-import {ApiMethod, apiRequest, ApiResponse, ApiResult, ApiUrl} from "@/components/api.ts";
+import {ApiMethod, apiRequest, ApiResult, ApiUrl} from "@/components/api.ts";
 import {changePage, Pages} from "@/components/router.ts";
 import {USER_KEY} from "@/components/constant.ts";
+import {PopupType} from "@/components/enums.ts";
+import {ResultDto} from "@/dto/ResultDto.ts";
 
 
 const username=ref('');
 const password=ref('');
 
-const isError=ref(false);
-const isChecking=ref(false);
-const isMessage=ref(false);
+const popupType=ref(PopupType.none);
 const popupMsg=ref('');
+let popupResponse:((value:boolean)=>void)|null=null;
+
+const apiResult=ref<ResultDto>();
 
 
 
@@ -20,15 +23,13 @@ const popupMsg=ref('');
  * 創建新帳戶
  */
 async function createUser(){
-  //關閉確認視窗
-  isChecking.value=false;
   try {
-    const data=await apiRequest<ApiResponse>({
+    apiResult.value=await apiRequest<ResultDto>({
       url:ApiUrl.createUser,
       method:ApiMethod.post,
       data:{username:username.value,password:password.value}
     });
-    if(data.isSuccess){
+    if(apiResult.value.isSuccess){
       msgPopup("創建成功")
       setTimeout(()=>{
         successLogin();
@@ -45,23 +46,28 @@ async function loginSubmit() {
   //帳號密碼輸入檢查
   if(!checkInput()){
     popupMsg.value="請輸入正確帳號密碼";
-    isError.value=true;
+    popupType.value=PopupType.error;
     return;
   }
   //登入api
   try {
-    const data=await apiRequest<ApiResponse>({
+    apiResult.value=await apiRequest<ResultDto>({
       url:ApiUrl.login,
       method:ApiMethod.post,
       data:{username:username.value,password:password.value}
   });
-    if(!data.isSuccess){
+    if(!apiResult.value.isSuccess){
       //失敗後判斷是否為新使用者
-      if(data.message===ApiResult.user_not_exist){
-        popupMsg.value=`是否創建新帳號?<br>帳號: ${username.value} 密碼: ${password.value}`;
-        isChecking.value=true;
-      }else {
-        errorPopup(data.message);
+      switch (apiResult.value?.message){
+        case ApiResult.user_not_exist:
+          await createUserCheck();
+          break;
+        case ApiResult.password_wrong:
+          errorPopup("密碼錯誤")
+          break;
+        default:
+          errorPopup("未知錯誤")
+          break;
       }
       //登入成功
     }else {
@@ -71,6 +77,24 @@ async function loginSubmit() {
     errorPopup(e.message);
   }
 }
+
+/**
+ * 彈出是否創建新帳號的確認視窗並等待結果
+ */
+async function createUserCheck(){
+  const isConfirmed=await checkingPopup(`是否創建新帳號?<br>帳號: ${username.value} 密碼: ${password.value}`);
+  if(isConfirmed){
+    await createUser();
+  }
+}
+
+function handleCheckingResponse(isConfirmed:boolean){
+  if(popupResponse){
+    popupResponse(isConfirmed);
+    popupResponse=null;
+  }
+}
+
 
 function successLogin(){
   const currentUser={
@@ -87,11 +111,18 @@ function successLogin(){
  */
 function errorPopup(msg:string){
   popupMsg.value=msg;
-  isError.value=true;
+  popupType.value=PopupType.error;
 }
 function msgPopup(msg:string){
   popupMsg.value=msg;
-  isMessage.value=true;
+  popupType.value=PopupType.message;
+}
+function checkingPopup(msg:string):Promise<boolean>{
+  return new Promise((resolve)=>{
+    popupResponse=resolve;
+    popupMsg.value=msg;
+    popupType.value=PopupType.checking;
+  });
 }
 
 /**
@@ -127,9 +158,7 @@ function checkInput(){
       </form>
     </div>
 <!--    彈出視窗-->
-    <Popup :pop-up-msg="popupMsg" :is-checking="isChecking" :is-error="isError" :auto-hide="1000"
-           @confirm="createUser" @cancel="isChecking=false" @update:is-error="isError=$event"
-           @update:is-message="isMessage=$event" :is-message="isMessage"/>
+    <Popup :pop-up-msg="popupMsg" :type="popupType" @update:is-popup="popupType=$event" @response:checking="handleCheckingResponse"/>
   </div>
 </template>
 

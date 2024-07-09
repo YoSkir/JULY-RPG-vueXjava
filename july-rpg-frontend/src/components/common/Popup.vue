@@ -1,37 +1,34 @@
 <script setup lang="ts">
-import {watch} from "vue";
+import {ref, watch} from "vue";
+import {PopupType} from "@/components/enums.ts";
 
+const autoHide:number=2000;
+
+
+  
 const props=defineProps({
   popUpMsg:String,
-  isError:Boolean,
-  isChecking:Boolean,
-  isMessage:Boolean,
-  autoHide:Number
+  type:String as ()=>PopupType,
 })
-const emit=defineEmits(["update:isMessage","update:isError","confirm","cancel"]);
+const emit=defineEmits(["update:isPopup","response:checking"]);
 
 /**
  * 彈出視窗自動消失
  */
-watch(()=>props.isError,(newVal)=>{
-  if(newVal && props.autoHide && props.autoHide>0){
+watch(()=>props.type,(newVal)=>{
+  if((newVal===PopupType.error||newVal===PopupType.message) && autoHide && autoHide>0){
     setTimeout(()=>{
-      emit("update:isError",false);
-    },props.autoHide);
-  }
-});
-watch(()=>props.isMessage,(newVal)=>{
-  if(newVal && props.autoHide && props.autoHide>0){
-    setTimeout(()=>{
-      emit("update:isMessage",false);
-    },props.autoHide);
+      emit("update:isPopup",PopupType.none);
+    },autoHide);
   }
 });
 function confirmAction(){
-  emit("confirm");
+  emit("update:isPopup",PopupType.none);
+  emit("response:checking",true);
 }
 function cancelAction(){
-  emit("cancel");
+  emit("update:isPopup",PopupType.none);
+  emit("response:checking",false);
 }
 </script>
 
@@ -39,18 +36,18 @@ function cancelAction(){
   <div class="layer-5 popup">
     <!--  警告視窗-->
     <transition name="fade">
-      <div v-if="isError" class="error-popup">
+      <div v-if="type===PopupType.error" class="error-popup">
         <div v-html="popUpMsg"></div>
       </div>
     </transition>
     <!--  訊息視窗-->
     <transition name="fade">
-      <div v-if="isMessage" class="message-popup">
+      <div v-if="type===PopupType.message" class="message-popup">
         <div v-html="popUpMsg"></div>
       </div>
     </transition>
     <!--      確認視窗-->
-    <div v-if="isChecking" class="check-popup">
+    <div v-if="type===PopupType.checking" class="check-popup">
       <div v-html="popUpMsg"></div>
       <div class="button-container">
         <button @click="confirmAction" class="submit-button">確定</button>
