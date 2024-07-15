@@ -19,6 +19,7 @@ const popupMsg=ref('');
 //排列能力值用
 const statusGroups=ref([2,2,2,2,1]);
 
+
 /**
  * 讀取選手列表
   */
@@ -88,6 +89,9 @@ async function generatePlayer(){
   }
 }
 
+/**
+ * 測試用 提升選手等級
+ */
 async function levelUp(){
   try {
     const response=await apiRequest<ResultDto>({
@@ -149,6 +153,34 @@ onMounted(()=>{
   border-radius: 10px;
 }
 
+.player-container:hover{
+  border: 3px solid #00b894;
+  background: #10c791;
+}
+.player-container:hover .player-left{
+  background: #10c791;
+}
+.player-container:hover .level-value{
+  color: black;
+  font-size: 1.15em;
+}
+.player-container:hover .player-name{
+  color: gold;
+}
+.player-container:hover .status-container{
+  background: #228c6d;
+  border: 5px solid #228c6d;
+}
+.player-container:hover :deep(.status-container .status-value) {
+  color: #ff9900;
+}
+.player-container:hover :deep(.status-container .status){
+  color: white;
+}
+.player-container:hover :deep(.status-container .status-potential){
+  color: #d78b98;
+}
+
 .level {
   color: #1b6956;
 }
@@ -162,10 +194,11 @@ onMounted(()=>{
   padding: 10px;
   background: #00b894;
   align-content: center;
-  width: 150px;
+  width: 200px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
+
 
 .player-right {
   display: flex;

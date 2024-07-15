@@ -5,7 +5,7 @@ import {Status} from "@/components/enums.ts";
 const props=defineProps({
   title:String as ()=>Status,
   value:Number,
-  potential:Number
+  potential:Number,
 });
 
 </script>
